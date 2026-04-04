@@ -1,0 +1,9 @@
+version: 2
+
+builds:
+  - id: win
+    goos:
+      - windows
+    ldflags:
+      - -H=windowsgui
+    binary: "{{ .ProjectName }}-{{- if eq .Arch \"386\" }}x86{{ else if eq .Arch \"amd64\" }}x64{{ else }}{{ .Arch }}{{ end }}-v{{ .Version }}"
