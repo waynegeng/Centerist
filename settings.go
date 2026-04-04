@@ -1,3 +1,18 @@
+// Copyright (c) 2025 waynegeng
+//
+// This program is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with this program. If not, see https://www.gnu.org/licenses/.
+
 package main
 
 import (
@@ -57,7 +72,7 @@ func showSettingsDialog() {
 		hwnd := w32.CreateWindowExStr(
 			0,
 			settingsWndClass,
-			"Centerist - 快捷键设置",
+			"Centerist - Hotkey Settings",
 			0x00C80000,             // WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU
 			0x80000000, 0x80000000, // CW_USEDEFAULT
 			430, 240,
@@ -73,7 +88,7 @@ func showSettingsDialog() {
 			w32.SendMessage(h, 0x0030, hFont, 1) // WM_SETFONT
 		}
 
-		lbl1 := w32.CreateWindowExStr(0, "STATIC", "窗口居中快捷键:",
+		lbl1 := w32.CreateWindowExStr(0, "STATIC", "Center window:",
 			w32.WS_CHILD|w32.WS_VISIBLE, 20, 22, 150, 20, hwnd, 0, inst, nil)
 		setFont(lbl1)
 
@@ -82,7 +97,7 @@ func showSettingsDialog() {
 			180, 20, 220, 24, hwnd, 0, inst, nil)
 		setFont(hEditCenter)
 
-		lbl2 := w32.CreateWindowExStr(0, "STATIC", "居中调整大小快捷键:",
+		lbl2 := w32.CreateWindowExStr(0, "STATIC", "Center & Resize:",
 			w32.WS_CHILD|w32.WS_VISIBLE, 20, 57, 150, 20, hwnd, 0, inst, nil)
 		setFont(lbl2)
 
@@ -91,7 +106,7 @@ func showSettingsDialog() {
 			180, 55, 220, 24, hwnd, 0, inst, nil)
 		setFont(hEditFixed)
 
-		lbl3 := w32.CreateWindowExStr(0, "STATIC", "窗口边距 (像素):",
+		lbl3 := w32.CreateWindowExStr(0, "STATIC", "Margin (px):",
 			w32.WS_CHILD|w32.WS_VISIBLE, 20, 92, 150, 20, hwnd, 0, inst, nil)
 		setFont(lbl3)
 
@@ -100,12 +115,12 @@ func showSettingsDialog() {
 			180, 90, 220, 24, hwnd, 0, inst, nil)
 		setFont(hEditMargin)
 
-		btnSave := w32.CreateWindowExStr(0, "BUTTON", "保存",
+		btnSave := w32.CreateWindowExStr(0, "BUTTON", "Save",
 			w32.WS_CHILD|w32.WS_VISIBLE|0x00010000,
 			230, 140, 85, 32, hwnd, w32.HMENU(idBtnSave), inst, nil)
 		setFont(btnSave)
 
-		btnCancel := w32.CreateWindowExStr(0, "BUTTON", "取消",
+		btnCancel := w32.CreateWindowExStr(0, "BUTTON", "Cancel",
 			w32.WS_CHILD|w32.WS_VISIBLE|0x00010000,
 			325, 140, 85, 32, hwnd, w32.HMENU(idBtnCancel), inst, nil)
 		setFont(btnCancel)
@@ -134,16 +149,16 @@ func settingsWndProc(hwnd, msg, wParam, lParam uintptr) uintptr {
 			marginStr := w32.GetWindowText(hEditMargin)
 
 			if _, _, err := parseHotkey(centerStr); err != nil {
-				w32.MessageBox(h, fmt.Sprintf("无效的居中快捷键: %v", err), "Centerist", w32.MB_ICONWARNING|w32.MB_OK)
+				w32.MessageBox(h, fmt.Sprintf("Invalid center hotkey: %v", err), "Centerist", w32.MB_ICONWARNING|w32.MB_OK)
 				return 0
 			}
 			if _, _, err := parseHotkey(fixedStr); err != nil {
-				w32.MessageBox(h, fmt.Sprintf("无效的调整大小快捷键: %v", err), "Centerist", w32.MB_ICONWARNING|w32.MB_OK)
+				w32.MessageBox(h, fmt.Sprintf("Invalid resize hotkey: %v", err), "Centerist", w32.MB_ICONWARNING|w32.MB_OK)
 				return 0
 			}
 			margin, err := strconv.ParseInt(marginStr, 10, 32)
 			if err != nil || margin < 0 {
-				w32.MessageBox(h, "无效的边距值，请输入非负整数", "Centerist", w32.MB_ICONWARNING|w32.MB_OK)
+				w32.MessageBox(h, "Invalid margin, enter a non-negative integer", "Centerist", w32.MB_ICONWARNING|w32.MB_OK)
 				return 0
 			}
 
@@ -155,7 +170,7 @@ func settingsWndProc(hwnd, msg, wParam, lParam uintptr) uintptr {
 				},
 			}
 			if err := saveConfig(cfg); err != nil {
-				w32.MessageBox(h, fmt.Sprintf("保存失败: %v", err), "Centerist", w32.MB_ICONERROR|w32.MB_OK)
+				w32.MessageBox(h, fmt.Sprintf("Failed to save: %v", err), "Centerist", w32.MB_ICONERROR|w32.MB_OK)
 				return 0
 			}
 
