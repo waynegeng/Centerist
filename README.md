@@ -1,32 +1,30 @@
 # Centerist
 
-一个轻量级的 Windows 窗口居中工具。通过全局快捷键，快速将当前活动窗口居中显示，或居中并调整为指定大小。
+A lightweight Windows utility that centers the active window with global hotkeys, or centers it and resizes it to the work area minus a configurable margin.
 
-## 功能
+## Features
 
-- **窗口居中**：保持窗口原有大小，移动到当前显示器工作区的正中央。
-- **居中并调整大小**：将窗口居中，并调整为工作区大小减去指定边距。
+- **Center window**: Keeps the current size and moves the window to the center of the monitor work area.
+- **Center and resize**: Centers the window and sizes it to the work area minus the margin you set.
 
-## 默认快捷键
+## Default hotkeys
 
+| Action | Hotkey |
+|--------|--------|
+| Center window | `Alt + C` |
+| Center and resize | `Alt + Enter` |
 
-| 功能      | 快捷键           |
-| ------- | ------------- |
-| 窗口居中    | `Alt + C`     |
-| 居中并调整大小 | `Alt + Enter` |
+You can change hotkeys and margin from the tray menu (**Hotkey Settings...**). Changes apply immediately; no restart required.
 
+## Usage
 
-快捷键和边距均可通过托盘菜单的「快捷键设置...」修改，保存后立即生效，无需重启。
+1. Run `Centerist.exe`. An icon appears in the system tray.
+2. Use the hotkeys on the foreground window.
+3. Right-click the tray icon to change hotkeys, toggle run on startup, or quit.
 
-## 使用方法
+## Configuration
 
-1. 运行 `Centerist.exe`，程序图标会出现在系统托盘。
-2. 按下快捷键即可操作当前活动窗口。
-3. 右键托盘图标可以修改快捷键、设置开机启动或退出程序。
-
-## 配置文件
-
-配置文件位于 `%APPDATA%\Centerist\config.json`，格式如下：
+Settings are stored in `%APPDATA%\Centerist\config.json`:
 
 ```json
 {
@@ -38,17 +36,27 @@
 }
 ```
 
-支持的修饰键：`Alt`、`Ctrl`、`Shift`、`Win`。
-支持的按键：`A`-`Z`、`0`-`9`、`F1`-`F12`、`Enter`、`Space`、`Tab`、`Escape` 及方向键等。
+Supported modifiers: `Alt`, `Ctrl`, `Shift`, `Win`.  
+Supported keys include `A`–`Z`, `0`–`9`, `F1`–`F12`, `Enter`, `Space`, `Tab`, `Escape`, and arrow keys.
 
-## 从源码构建
+## Build from source
 
-需要 Go 1.17+：
+Requires Go 1.17+:
 
 ```sh
-go build -ldflags -H=windowsgui -o Centerist.exe .
+go build -ldflags "-H=windowsgui" -o Centerist.exe .
 ```
 
-## 许可证
+## Windows installer
 
-Apache License 2.0，详见 [LICENSE](./LICENSE)。
+With [Inno Setup 6](https://jrsoftware.org/isinfo.php) installed:
+
+```text
+"C:\Program Files (x86)\Inno Setup 6\ISCC.exe" installer.iss
+```
+
+The installer is written to `dist/Centerist-Setup.exe`.
+
+## License
+
+[GNU General Public License v3.0](LICENSE) (GPL-3.0).
