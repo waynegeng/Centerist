@@ -126,6 +126,62 @@ var vkNames = map[string]int{
 	"f9": 0x78, "f10": 0x79, "f11": 0x7A, "f12": 0x7B,
 }
 
+// vkCanonicalName maps virtual-key codes to display names accepted by parseHotkey.
+var vkCanonicalName = map[int]string{
+	0x08: "Backspace",
+	0x09: "Tab",
+	0x0D: "Enter",
+	0x1B: "Esc",
+	0x20: "Space",
+	0x21: "PageUp",
+	0x22: "PageDown",
+	0x23: "End",
+	0x24: "Home",
+	0x25: "Left",
+	0x26: "Up",
+	0x27: "Right",
+	0x28: "Down",
+	0x2D: "Insert",
+	0x2E: "Delete",
+	0x70: "F1", 0x71: "F2", 0x72: "F3", 0x73: "F4",
+	0x74: "F5", 0x75: "F6", 0x76: "F7", 0x77: "F8",
+	0x78: "F9", 0x79: "F10", 0x7A: "F11", 0x7B: "F12",
+}
+
+func vkDisplayName(vk int) (string, bool) {
+	if vk >= 0x41 && vk <= 0x5A {
+		return string(rune(vk)), true
+	}
+	if vk >= 0x30 && vk <= 0x39 {
+		return string(rune(vk)), true
+	}
+	if name, ok := vkCanonicalName[vk]; ok {
+		return name, true
+	}
+	return "", false
+}
+
+func formatHotkey(mod, vk int) (string, bool) {
+	if name, ok := vkDisplayName(vk); ok {
+		var parts []string
+		if mod&MOD_CONTROL != 0 {
+			parts = append(parts, "Ctrl")
+		}
+		if mod&MOD_ALT != 0 {
+			parts = append(parts, "Alt")
+		}
+		if mod&MOD_SHIFT != 0 {
+			parts = append(parts, "Shift")
+		}
+		if mod&MOD_WIN != 0 {
+			parts = append(parts, "Win")
+		}
+		parts = append(parts, name)
+		return strings.Join(parts, "+"), true
+	}
+	return "", false
+}
+
 func parseHotkey(s string) (mod int, vk int, err error) {
 	parts := strings.Split(s, "+")
 	if len(parts) == 0 {
